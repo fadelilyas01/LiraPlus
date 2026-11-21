@@ -71,7 +71,7 @@ jobs:
           echo "=== DIAGNOSTIC DES TESTS EN ÉCHEC ==="
           grep -C 30 "\[E\]" test_results.log || true
           if [ -f test_results.log ]; then
-            grep -A 25 "\[E\]" test_results.log | while IFS= read -r line; do
+            grep -B 40 "\[E\]" test_results.log | while IFS= read -r line; do
               echo "::error::$line"
             done
           fi
