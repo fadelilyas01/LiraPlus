@@ -4,6 +4,7 @@ import 'package:liraplus/core/errors/failures.dart';
 import 'package:liraplus/core/models/dactylology_data.dart';
 import 'package:liraplus/core/models/falc_dictionary.dart';
 import 'package:liraplus/core/nlp/french_syllabifier.dart';
+import 'package:liraplus/core/nlp/lsq_semantic_engine.dart';
 import 'package:liraplus/core/providers/accessibility_provider.dart';
 import 'package:liraplus/core/services/tts_haptic_service.dart';
 import 'package:liraplus/core/storage/preferences_repository.dart';
@@ -1045,6 +1046,26 @@ void main() {
 
       // Écoulement du timer d'animation de retour
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
+    });
+
+    test(
+        'LsqSemanticEngine reconnaît les mots scannés hors dictionnaire et bascule en dactylologie sur noms propres',
+        () {
+      final apple = LsqSemanticEngine.analyze('pommes');
+      expect(apple.isKnownSign, isTrue);
+      expect(apple.kind, LsqMovementKind.handPinch);
+
+      final rain = LsqSemanticEngine.analyze('pluie');
+      expect(rain.isKnownSign, isTrue);
+      expect(rain.kind, LsqMovementKind.waterWaveFlow);
+
+      final past = LsqSemanticEngine.analyze('hier');
+      expect(past.isKnownSign, isTrue);
+      expect(past.categoryLabel, contains('Passé'));
+
+      final properNoun = LsqSemanticEngine.analyze('Rimouski');
+      expect(properNoun.isKnownSign, isFalse);
+      expect(properNoun.categoryLabel, contains('Épellation'));
     });
   });
 }

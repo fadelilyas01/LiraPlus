@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../../core/models/falc_dictionary.dart';
 import '../../../../core/nlp/french_syllabifier.dart';
+import '../../../../core/nlp/lsq_semantic_engine.dart';
 import '../../../../core/services/tts_haptic_service.dart';
 import '../../../../core/theme/accessibility_themes.dart';
 
@@ -80,10 +81,17 @@ class _WordItemWidgetState extends State<WordItemWidget> {
     final isLowVision = settings.profile == AccessibilityProfile.lowVision;
 
     final isLsqProfile = settings.profile == AccessibilityProfile.lsqVisual;
-    final hasVisualPicto = settings.visualPictogramsEnabled &&
-        FalcDictionary.hasEntry(word.cleanWord);
-    final pictoIcon =
-        hasVisualPicto ? FalcDictionary.getEntry(word.cleanWord).icon : null;
+    IconData? pictoIcon;
+    if (settings.visualPictogramsEnabled && word.cleanWord.trim().length > 2) {
+      if (FalcDictionary.hasEntry(word.cleanWord)) {
+        pictoIcon = FalcDictionary.getEntry(word.cleanWord).icon;
+      } else {
+        final semantic = LsqSemanticEngine.analyze(word.cleanWord);
+        if (semantic.isKnownSign) {
+          pictoIcon = semantic.icon;
+        }
+      }
+    }
 
     return Semantics(
       button: true,

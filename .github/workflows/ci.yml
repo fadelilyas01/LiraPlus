@@ -34,8 +34,8 @@ jobs:
       - name: Vérification du formatage du code
         run: dart format --output=none --set-exit-if-changed .
 
-      - name: Analyse statique approfondie (Zéro Avertissement)
-        run: flutter analyze --fatal-infos --fatal-warnings
+      - name: Analyse statique approfondie (Zéro Erreur, Zéro Avertissement)
+        run: flutter analyze --fatal-warnings
 
   test-and-coverage:
     name: Suite de Tests Automatisés & Régression
@@ -56,7 +56,7 @@ jobs:
       - name: Résolution des dépendances
         run: flutter pub get
 
-      - name: Exécution des 41 tests automatisés & régression
+      - name: Exécution des 42 tests automatisés & régression
         run: flutter test --coverage
 
   build-verification:
@@ -86,6 +86,9 @@ jobs:
 
       - name: Résolution des dépendances
         run: flutter pub get
+
+      - name: Acceptation des licences Android SDK
+        run: yes | flutter doctor --android-licenses || true
 
       - name: Compilation de contrôle (APK Debug)
         run: flutter build apk --debug

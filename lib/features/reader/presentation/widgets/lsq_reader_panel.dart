@@ -2,13 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/models/dactylology_data.dart';
-import '../../../../core/models/falc_dictionary.dart';
+import '../../../../core/nlp/lsq_semantic_engine.dart';
 import '../../../../core/providers/accessibility_provider.dart';
 import '../../../../core/services/tts_haptic_service.dart';
 import '../alphabet_workshop_screen.dart';
 import 'alphabet_quiz_sheet.dart';
 import 'lsq_handshape_widget.dart';
 import 'lsq_motion_viewer.dart';
+import 'lsq_speller_player.dart';
 
 /// Panneau LSQ compact et fixe (zéro scroll requis) pour enfants sourds et malentendants :
 /// - L'enfant voit le texte en bas ET les signes en haut EN MÊME TEMPS sur le même écran
@@ -93,6 +94,8 @@ class _LsqReaderPanelState extends State<LsqReaderPanel> {
   void _openFullMotionModal(
       BuildContext context, String word, AccessibilityProvider provider) {
     final colors = provider.colors;
+    final semanticMatch = LsqSemanticEngine.analyze(word);
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -118,12 +121,47 @@ class _LsqReaderPanelState extends State<LsqReaderPanel> {
                 ),
               ),
               const SizedBox(height: 14),
-              LsqMotionViewer(
-                word: word,
-                colors: colors,
-                isLowVision: false,
-                enableHaptics: provider.settings.hapticFeedbackEnabled,
-              ),
+              // Si le mot est reconnu par le moteur sémantique LSQ -> Mouvement LSQ dédié
+              // Sinon (nom propre ou mot rare issu d'une photo) -> Épellation automatique en mains LSQ
+              if (semanticMatch.isKnownSign)
+                LsqMotionViewer(
+                  word: word,
+                  colors: colors,
+                  isLowVision: false,
+                  enableHaptics: provider.settings.hapticFeedbackEnabled,
+                )
+              else
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Épellation LSQ : ${word.toUpperCase()}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: colors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Ce mot est un nom propre ou un mot spécifique : en LSQ, on l\'épelle lettre par lettre.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    LsqSpellerPlayer(
+                      word: word,
+                      colors: colors,
+                      isMirrorView: _isMirrorView,
+                      enableHaptics: provider.settings.hapticFeedbackEnabled,
+                    ),
+                  ],
+                ),
               const SizedBox(height: 14),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -164,7 +202,7 @@ class _LsqReaderPanelState extends State<LsqReaderPanel> {
     final selectedLetter = dactylologyEntries.isNotEmpty
         ? dactylologyEntries[safeLetterIdx]
         : null;
-    final falcEntry = FalcDictionary.getEntry(activeWord);
+    final semanticMatch = LsqSemanticEngine.analyze(activeWord);
 
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 6, 12, 4),
@@ -401,13 +439,14 @@ class _LsqReaderPanelState extends State<LsqReaderPanel> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(falcEntry.icon, size: 15, color: colors.accent),
+                        Icon(semanticMatch.icon,
+                            size: 15, color: colors.accent),
                         const SizedBox(width: 5),
                         Expanded(
                           child: Text(
                             selectedLetter != null
                                 ? '${selectedLetter.letter} : ${selectedLetter.handDescription}'
-                                : falcEntry.lsqDescription,
+                                : semanticMatch.trajectoryDescription,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
