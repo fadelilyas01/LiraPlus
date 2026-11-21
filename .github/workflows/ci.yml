@@ -22,10 +22,11 @@ jobs:
       - name: Récupération du code source
         uses: actions/checkout@v4
 
-      - name: Configuration de Flutter (Canal Stable)
+      - name: Configuration de Flutter (Canal Stable v3.38.7)
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          flutter-version: '3.38.7'
           cache: true
 
       - name: Résolution des dépendances
@@ -47,10 +48,11 @@ jobs:
       - name: Récupération du code source
         uses: actions/checkout@v4
 
-      - name: Configuration de Flutter (Canal Stable)
+      - name: Configuration de Flutter (Canal Stable v3.38.7)
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          flutter-version: '3.38.7'
           cache: true
 
       - name: Résolution des dépendances
@@ -102,10 +104,11 @@ jobs:
       - name: Configuration de Gradle avec cache
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Configuration de Flutter (Canal Stable)
+      - name: Configuration de Flutter (Canal Stable v3.38.7)
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          flutter-version: '3.38.7'
           cache: true
 
       - name: Résolution des dépendances
