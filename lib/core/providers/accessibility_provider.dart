@@ -19,12 +19,17 @@ class AccessibilityProvider extends ChangeNotifier {
   List<SavedTextEntry> _savedTexts = [];
   int? _highlightedWordIndex;
   bool _isInitialized = false;
+  bool _isSettingsExplicitlyModified = false;
+  Future<void>? _initFuture;
+
+  /// Future complété lorsque le chargement initial depuis le stockage persistant est achevé
+  Future<void> get initializationDone => _initFuture ?? Future.value();
 
   AccessibilityProvider({IPreferencesRepository? preferencesRepository})
       : _preferencesRepository =
             preferencesRepository ?? LocalPreferencesRepository() {
     _analyzeCurrentText();
-    unawaited(_loadSavedState());
+    _initFuture = _loadSavedState();
   }
 
   AccessibilitySettings get settings => _settings;
@@ -77,7 +82,9 @@ class AccessibilityProvider extends ChangeNotifier {
     final settingsResult = await _preferencesRepository.loadSettings();
     settingsResult.fold(
       onSuccess: (loadedSettings) {
-        _settings = loadedSettings;
+        if (!_isSettingsExplicitlyModified) {
+          _settings = loadedSettings;
+        }
       },
       onFailure: (_) {
         // En cas d'erreur de lecture, conservation du profil standard par défaut
@@ -123,6 +130,7 @@ class AccessibilityProvider extends ChangeNotifier {
   }
 
   Future<void> _persistSettings() async {
+    _isSettingsExplicitlyModified = true;
     await _preferencesRepository.saveSettings(_settings);
   }
 

@@ -326,6 +326,7 @@ void main() {
     test('Cycle de vitesse vocale rapide (0.5x -> 0.75x -> 1.0x)', () async {
       final repo = InMemoryPreferencesRepository();
       final provider = AccessibilityProvider(preferencesRepository: repo);
+      await provider.initializationDone;
       provider.setSpeechRate(0.5);
       final fakeTts = FakeTtsService();
 
