@@ -114,5 +114,21 @@ jobs:
       - name: Acceptation des licences Android SDK
         run: yes | flutter doctor --android-licenses || true
 
+      - name: Rendre Gradle Wrapper exécutable
+        run: chmod +x android/gradlew
+
       - name: Compilation de contrôle (APK Debug)
-        run: flutter build apk --debug
+        run: |
+          set -o pipefail
+          flutter build apk --debug 2>&1 | tee build_apk.log || {
+            echo "=== ERREUR DE COMPILATION ANDROID ==="
+            tail -n 100 build_apk.log
+            exit 1
+          }
+
+      - name: Téléversement des logs de compilation en cas d'échec
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-apk-log
+          path: build_apk.log
