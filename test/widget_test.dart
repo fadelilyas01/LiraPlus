@@ -462,6 +462,13 @@ void main() {
 
     testWidgets('Ouverture de l\'écran Guide & FAQ Parents',
         (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(800, 1200);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
       final repo = InMemoryPreferencesRepository();
       final provider =
           AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
@@ -484,6 +491,10 @@ void main() {
       expect(find.byType(FaqScreen), findsOneWidget);
       expect(find.text('Guide & FAQ Parents'), findsOneWidget);
       expect(find.textContaining('Le son ne sort pas'), findsOneWidget);
+
+      // Filtre catégorie pour valider la section Enfant Sourd sans dépendre de la hauteur d'écran
+      await tester.tap(find.text('🤟 Enfant Sourd'));
+      await tester.pumpAndSettle();
       expect(find.textContaining('Mon enfant est sourd'), findsOneWidget);
     });
 
