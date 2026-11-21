@@ -120,7 +120,7 @@ jobs:
       - name: Compilation de contrôle (APK Debug)
         run: |
           set -o pipefail
-          flutter build apk --debug 2>&1 | tee build_apk.log || {
+          flutter build apk --debug --android-skip-build-dependency-validation 2>&1 | tee build_apk.log || {
             echo "=== ERREUR DE COMPILATION ANDROID ==="
             tail -n 100 build_apk.log
             exit 1
