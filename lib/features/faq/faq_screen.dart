@@ -346,17 +346,18 @@ class _FaqScreenState extends State<FaqScreen> {
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: colors.surface,
+                              child: Material(
+                                color: colors.surface,
+                                shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(
+                                  side: BorderSide(
                                     color: isLowVision
                                         ? colors.border
                                         : colors.border.withValues(alpha: 0.6),
                                     width: isLowVision ? 2.0 : 1.0,
                                   ),
                                 ),
+                                clipBehavior: Clip.antiAlias,
                                 child: Theme(
                                   data: Theme.of(context).copyWith(
                                       dividerColor: Colors.transparent),
