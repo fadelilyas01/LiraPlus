@@ -288,7 +288,8 @@ void main() {
   group('AccessibilityProvider & Storage Persistence Tests', () {
     test('Bascule entre les profils et persistance dans le dépôt', () async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       expect(provider.currentProfile, equals(AccessibilityProfile.standard));
 
@@ -312,7 +313,8 @@ void main() {
 
     test('Chargement de nouveau texte et persistance du dernier texte', () {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       provider.setText('Un bel arbre.');
       expect(provider.analyzedWords.length, equals(3));
@@ -325,7 +327,8 @@ void main() {
 
     test('Cycle de vitesse vocale rapide (0.5x -> 0.75x -> 1.0x)', () async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
       await provider.initializationDone;
       provider.setSpeechRate(0.5);
       final fakeTts = FakeTtsService();
@@ -346,7 +349,8 @@ void main() {
         'Sauvegarde et suppression d\'un texte personnalisé dans la bibliothèque',
         () async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       provider.setText('Mon devoir scanné.');
       await provider.saveCurrentText('Devoir Page 10');
@@ -360,6 +364,19 @@ void main() {
 
       expect(provider.savedTexts.isEmpty, isTrue);
       expect(repo.customTexts.isEmpty, isTrue);
+    });
+
+    test('Chargement asynchrone des données sauvegardées au démarrage',
+        () async {
+      final repo = InMemoryPreferencesRepository();
+      repo.savedSettings =
+          AccessibilitySettings.forProfile(AccessibilityProfile.dyslexia);
+      repo.savedText = 'Texte restauré';
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: true);
+      await provider.initializationDone;
+      expect(provider.currentProfile, equals(AccessibilityProfile.dyslexia));
+      expect(provider.currentText, equals('Texte restauré'));
     });
   });
 
@@ -388,7 +405,8 @@ void main() {
     testWidgets('Lancement de LiraPlus et présence du lecteur',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       await tester.pumpWidget(LiraPlusApp(provider: provider));
       await tester.pumpAndSettle();
@@ -405,7 +423,8 @@ void main() {
     testWidgets('Bascule en profil Basse Vision active la règle de lecture',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       await tester.pumpWidget(LiraPlusApp(provider: provider));
       await tester.pumpAndSettle();
@@ -420,7 +439,8 @@ void main() {
         'Validation des dimensions tactiles minimales (Loi de Fitts >= 48dp)',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       await tester.pumpWidget(LiraPlusApp(provider: provider));
       await tester.pumpAndSettle();
@@ -443,7 +463,8 @@ void main() {
     testWidgets('Ouverture de l\'écran Guide & FAQ Parents',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       await tester.pumpWidget(LiraPlusApp(provider: provider));
       await tester.pumpAndSettle();
@@ -469,7 +490,8 @@ void main() {
     testWidgets('Bouton de vitesse rapide dans la barre inférieure',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       await tester.pumpWidget(LiraPlusApp(provider: provider));
       await tester.pumpAndSettle();
@@ -489,7 +511,8 @@ void main() {
         'Ouverture de la bibliothèque et bascule d\'onglets MEQ / Mes Textes',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       await tester.pumpWidget(LiraPlusApp(provider: provider));
       await tester.pumpAndSettle();
@@ -514,7 +537,8 @@ void main() {
     testWidgets('Bascule en profil Soir (Lecture du soir)',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       await tester.pumpWidget(LiraPlusApp(provider: provider));
       await tester.pumpAndSettle();
@@ -587,7 +611,8 @@ void main() {
 
     test('Découpage des phrases et navigation phrase par phrase', () async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
       final fakeTts = FakeTtsService();
 
       provider.setText(
@@ -616,7 +641,8 @@ void main() {
       addTearDown(() => tester.view.resetPhysicalSize());
 
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       await tester.pumpWidget(LiraPlusApp(provider: provider));
       await tester.pumpAndSettle();
@@ -636,7 +662,8 @@ void main() {
       addTearDown(() => tester.view.resetPhysicalSize());
 
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       await tester.pumpWidget(
         MediaQuery(
@@ -780,7 +807,8 @@ void main() {
         'Bascule en profil LSQ affiche le panneau LSQ avec mouvement animé et dactylologie',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
       provider.setText('Le petit oiseau vole au-dessus du grand arbre.');
 
       await tester.pumpWidget(LiraPlusApp(provider: provider));
@@ -805,7 +833,8 @@ void main() {
         'Barre de progression par étapes et ouverture du carnet de trophées',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
       provider.setText(
           'Première phrase courte. Deuxième phrase magique. Troisième phrase finale.');
 
@@ -876,7 +905,8 @@ void main() {
         'AlphabetWorkshopScreen affiche les 26 lettres et les mots de l\'école',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
       final fakeTts = FakeTtsService();
 
       await tester.pumpWidget(
@@ -911,7 +941,8 @@ void main() {
         'AlphabetQuizSheet propose un choix et valide la réponse bienveillante',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -940,7 +971,8 @@ void main() {
         'WordVaultSheet pré-remplit les mots scolaires via le bouton de découverte initiale',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
       final fakeTts = FakeTtsService();
 
       await tester.pumpWidget(
@@ -984,7 +1016,8 @@ void main() {
         'GiantWordTeleprompter règle la vitesse directement via la pastille de tempo',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
       final fakeTts = FakeTtsService();
       provider.setText('Bonjour les amis');
 
@@ -1018,7 +1051,8 @@ void main() {
         'GiantWordTeleprompter synchronise la prononciation au toucher d\'une syllabe',
         (WidgetTester tester) async {
       final repo = InMemoryPreferencesRepository();
-      final provider = AccessibilityProvider(preferencesRepository: repo);
+      final provider =
+          AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
       final fakeTts = FakeTtsService();
       provider.setText('soleil');
 

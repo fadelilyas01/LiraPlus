@@ -25,11 +25,18 @@ class AccessibilityProvider extends ChangeNotifier {
   /// Future complété lorsque le chargement initial depuis le stockage persistant est achevé
   Future<void> get initializationDone => _initFuture ?? Future.value();
 
-  AccessibilityProvider({IPreferencesRepository? preferencesRepository})
-      : _preferencesRepository =
+  AccessibilityProvider({
+    IPreferencesRepository? preferencesRepository,
+    bool autoLoad = true,
+  }) : _preferencesRepository =
             preferencesRepository ?? LocalPreferencesRepository() {
     _analyzeCurrentText();
-    _initFuture = _loadSavedState();
+    if (autoLoad) {
+      _initFuture = _loadSavedState();
+    } else {
+      _isInitialized = true;
+      _initFuture = Future.value();
+    }
   }
 
   AccessibilitySettings get settings => _settings;
@@ -107,14 +114,20 @@ class AccessibilityProvider extends ChangeNotifier {
     final savedTextsResult = await _preferencesRepository.loadSavedTexts();
     savedTextsResult.fold(
       onSuccess: (list) {
-        _savedTexts = list;
+        if (_savedTexts.isEmpty && list.isNotEmpty) {
+          _savedTexts = list;
+        }
       },
       onFailure: (_) {},
     );
 
     final progResult = await _preferencesRepository.loadProgression();
     progResult.fold(
-      onSuccess: (prog) => _progression = prog,
+      onSuccess: (prog) {
+        if (_progression == const UserProgression()) {
+          _progression = prog;
+        }
+      },
       onFailure: (_) {},
     );
 

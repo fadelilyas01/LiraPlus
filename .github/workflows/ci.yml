@@ -56,7 +56,7 @@ jobs:
       - name: Résolution des dépendances
         run: flutter pub get
 
-      - name: Exécution des 42 tests automatisés & régression
+      - name: Exécution des tests automatisés & régression
         run: |
           set -o pipefail
           flutter test --coverage --reporter expanded 2>&1 | tee test_results.log
@@ -64,11 +64,22 @@ jobs:
       - name: Diagnostic détaillé des tests en cas d'échec
         if: failure()
         run: |
-          echo "### Rapport d'échec des tests" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          grep -B 3 -A 25 "EXCEPTION CAUGHT" test_results.log >> $GITHUB_STEP_SUMMARY || true
-          tail -n 60 test_results.log >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "=== DIAGNOSTIC DES TESTS EN ÉCHEC ==="
+          grep -E "\[E\]|TestFailure|FAILED|EXCEPTION CAUGHT" test_results.log -A 25 -B 5 || true
+          echo "=== DERNIÈRES LIGNES DU LOG ==="
+          tail -n 80 test_results.log
+          if [ -f test_results.log ]; then
+            while IFS= read -r line; do
+              echo "::error::$line"
+            done < <(grep -E "\[E\]|TestFailure" test_results.log || true)
+          fi
+
+      - name: Téléversement du rapport de tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-log
+          path: test_results.log
 
   build-verification:
     name: Vérification de Compilabilité Mobile (Android)
