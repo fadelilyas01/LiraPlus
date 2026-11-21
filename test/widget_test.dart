@@ -158,6 +158,10 @@ class FakeTtsService implements ITtsHapticService {
 }
 
 void main() {
+  setUpAll(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+  });
+
   group('Result & Failure Pattern Tests (Architecture & Dart 3)', () {
     test('Success encapsule les données et fold exécute onSuccess', () {
       const Result<int> result = Success(42);
@@ -321,11 +325,8 @@ void main() {
 
     test('Cycle de vitesse vocale rapide (0.5x -> 0.75x -> 1.0x)', () async {
       final repo = InMemoryPreferencesRepository();
-      repo.savedSettings =
-          AccessibilitySettings.forProfile(AccessibilityProfile.standard)
-              .copyWith(speechRate: 0.5);
       final provider = AccessibilityProvider(preferencesRepository: repo);
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+      provider.setSpeechRate(0.5);
       final fakeTts = FakeTtsService();
 
       expect(provider.settings.speechRate, equals(0.5));

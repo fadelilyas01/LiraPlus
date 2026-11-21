@@ -57,7 +57,18 @@ jobs:
         run: flutter pub get
 
       - name: Exécution des 42 tests automatisés & régression
-        run: flutter test --coverage --reporter expanded
+        run: |
+          set -o pipefail
+          flutter test --coverage --reporter expanded 2>&1 | tee test_results.log
+
+      - name: Diagnostic détaillé des tests en cas d'échec
+        if: failure()
+        run: |
+          echo "### Rapport d'échec des tests" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          grep -B 3 -A 25 "EXCEPTION CAUGHT" test_results.log >> $GITHUB_STEP_SUMMARY || true
+          tail -n 60 test_results.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
   build-verification:
     name: Vérification de Compilabilité Mobile (Android)
