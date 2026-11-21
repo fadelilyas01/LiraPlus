@@ -59,19 +59,21 @@ jobs:
       - name: Exécution des tests automatisés & régression
         run: |
           set -o pipefail
-          flutter test --coverage --reporter expanded 2>&1 | tee test_results.log
+          flutter test --coverage --reporter expanded 2>&1 | tee test_results.log || {
+            echo "=== RAPPORT IMMEDIAT DU TEST EN ECHEC ==="
+            grep -C 30 "\[E\]" test_results.log || true
+            exit 1
+          }
 
       - name: Diagnostic détaillé des tests en cas d'échec
         if: failure()
         run: |
           echo "=== DIAGNOSTIC DES TESTS EN ÉCHEC ==="
-          grep -E "\[E\]|TestFailure|FAILED|EXCEPTION CAUGHT" test_results.log -A 25 -B 5 || true
-          echo "=== DERNIÈRES LIGNES DU LOG ==="
-          tail -n 80 test_results.log
+          grep -C 30 "\[E\]" test_results.log || true
           if [ -f test_results.log ]; then
-            while IFS= read -r line; do
+            grep -A 25 "\[E\]" test_results.log | while IFS= read -r line; do
               echo "::error::$line"
-            done < <(grep -E "\[E\]|TestFailure" test_results.log || true)
+            done
           fi
 
       - name: Téléversement du rapport de tests

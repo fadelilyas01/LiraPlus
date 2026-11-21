@@ -489,12 +489,21 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(FaqScreen), findsOneWidget);
-      expect(find.text('Guide & FAQ Parents'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(FaqScreen),
+          matching: find.text('Guide & FAQ Parents'),
+        ),
+        findsOneWidget,
+      );
       expect(find.textContaining('Le son ne sort pas'), findsOneWidget);
 
-      // Filtre catégorie pour valider la section Enfant Sourd sans dépendre de la hauteur d'écran
-      await tester.tap(find.text('🤟 Enfant Sourd'));
-      await tester.pumpAndSettle();
+      // Défilement fluide jusqu'à la question sur la surdité
+      await tester.scrollUntilVisible(
+        find.textContaining('Mon enfant est sourd'),
+        150.0,
+        scrollable: find.byType(Scrollable).last,
+      );
       expect(find.textContaining('Mon enfant est sourd'), findsOneWidget);
     });
 
