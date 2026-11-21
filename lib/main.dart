@@ -45,8 +45,45 @@ class LiraPlusApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (provider != null) {
+      return ChangeNotifierProvider<AccessibilityProvider>.value(
+        value: provider!,
+        child: Consumer<AccessibilityProvider>(
+          builder: (context, accessibilityProvider, _) {
+            final settings = accessibilityProvider.settings;
+            final colors = settings.colors;
+
+            return MaterialApp(
+              title: 'LiraPlus',
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(
+                useMaterial3: true,
+                scaffoldBackgroundColor: colors.background,
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: colors.accent,
+                  brightness: settings.profile ==
+                              AccessibilityProfile.lowVision ||
+                          settings.profile == AccessibilityProfile.lsqVisual ||
+                          settings.profile == AccessibilityProfile.nightReading
+                      ? Brightness.dark
+                      : Brightness.light,
+                  surface: colors.surface,
+                  primary: colors.accent,
+                ),
+                textTheme: GoogleFonts.atkinsonHyperlegibleTextTheme().apply(
+                  bodyColor: colors.textPrimary,
+                  displayColor: colors.textPrimary,
+                ),
+              ),
+              home: const ReaderScreen(),
+            );
+          },
+        ),
+      );
+    }
+
     return ChangeNotifierProvider<AccessibilityProvider>(
-      create: (_) => provider ?? AccessibilityProvider(),
+      create: (_) => AccessibilityProvider(),
       child: Consumer<AccessibilityProvider>(
         builder: (context, accessibilityProvider, _) {
           final settings = accessibilityProvider.settings;

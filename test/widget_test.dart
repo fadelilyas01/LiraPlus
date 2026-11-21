@@ -462,13 +462,6 @@ void main() {
 
     testWidgets('Ouverture de l\'écran Guide & FAQ Parents',
         (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(800, 1200);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(() {
-        tester.view.resetPhysicalSize();
-        tester.view.resetDevicePixelRatio();
-      });
-
       final repo = InMemoryPreferencesRepository();
       final provider =
           AccessibilityProvider(preferencesRepository: repo, autoLoad: false);
@@ -498,12 +491,9 @@ void main() {
       );
       expect(find.textContaining('Le son ne sort pas'), findsOneWidget);
 
-      // Défilement fluide jusqu'à la question sur la surdité
-      await tester.scrollUntilVisible(
-        find.textContaining('Mon enfant est sourd'),
-        150.0,
-        scrollable: find.byType(Scrollable).last,
-      );
+      // Recherche interactive immédiate pour filtrer sur la surdité sans dépendre du défilement
+      await tester.enterText(find.byType(TextField), 'sourd');
+      await tester.pumpAndSettle();
       expect(find.textContaining('Mon enfant est sourd'), findsOneWidget);
     });
 
