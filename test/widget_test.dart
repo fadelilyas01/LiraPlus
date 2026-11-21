@@ -1044,8 +1044,9 @@ void main() {
       expect(fakeTts.lastSpokenWord, 'so');
       expect(fakeTts.lastSpokenSyllables, ['so']);
 
-      // Écoulement du timer d'animation de retour
-      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+      // Écoulement déterministe du minuteur et de l'animation de retour
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 300));
     });
 
     test(

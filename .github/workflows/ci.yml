@@ -57,7 +57,7 @@ jobs:
         run: flutter pub get
 
       - name: Exécution des 42 tests automatisés & régression
-        run: flutter test --coverage
+        run: flutter test --coverage --reporter expanded
 
   build-verification:
     name: Vérification de Compilabilité Mobile (Android)
