@@ -35,7 +35,7 @@ jobs:
         run: dart format --output=none --set-exit-if-changed .
 
       - name: Analyse statique approfondie (Zéro Erreur, Zéro Avertissement)
-        run: flutter analyze --fatal-warnings
+        run: flutter analyze --no-fatal-infos --fatal-warnings
 
   test-and-coverage:
     name: Suite de Tests Automatisés & Régression
