@@ -141,7 +141,8 @@ class _GiantWordTeleprompterState extends State<GiantWordTeleprompter> {
               // Suggestion 2 : Indicateur et bouton de vitesse directement dans le mode géant
               Semantics(
                 button: true,
-                label: 'Vitesse de lecture $speechRateLabel. Toucher pour changer.',
+                label:
+                    'Vitesse de lecture $speechRateLabel. Toucher pour changer.',
                 child: InkWell(
                   onTap: () async {
                     unawaited(HapticFeedback.selectionClick());
@@ -150,8 +151,8 @@ class _GiantWordTeleprompterState extends State<GiantWordTeleprompter> {
                   },
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                       color: colors.surfaceVariant,
                       borderRadius: BorderRadius.circular(10),

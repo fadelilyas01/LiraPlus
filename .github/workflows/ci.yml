@@ -56,7 +56,7 @@ jobs:
       - name: Résolution des dépendances
         run: flutter pub get
 
-      - name: Exécution des 38 tests unitaires & ergonomiques
+      - name: Exécution des 41 tests automatisés & régression
         run: flutter test --coverage
 
   build-verification:
@@ -74,6 +74,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+
+      - name: Configuration de Gradle avec cache
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Configuration de Flutter (Canal Stable)
         uses: subosito/flutter-action@v2

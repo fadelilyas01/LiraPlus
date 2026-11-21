@@ -518,7 +518,17 @@ class _ReaderScreenState extends State<ReaderScreen>
               // 1. Barre de sélection rapide des profils d'accessibilité (Standard, Basse Vision, Dyslexie, LSQ, Soir)
               ProfileSelectorBar(provider: provider),
 
-              // 2. Zone interactive centrale (Panneau LSQ + Texte aéré ou Mode Mot Géant avec gestes swipe)
+              // 2. Carte LSQ compacte et FIXE en haut en mode Portrait (zéro scroll pour voir signe + texte ensemble)
+              if (settings.profile == AccessibilityProfile.lsqVisual &&
+                  provider.analyzedWords.isNotEmpty &&
+                  !settings.giantWordMode &&
+                  MediaQuery.of(context).size.height >= 480)
+                LsqReaderPanel(
+                  provider: provider,
+                  ttsService: _ttsService,
+                ),
+
+              // 3. Zone interactive centrale (Texte aéré ou Mode Mot Géant avec gestes swipe)
               Expanded(
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
@@ -542,11 +552,12 @@ class _ReaderScreenState extends State<ReaderScreen>
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              // Panneau LSQ interactif inclus dans le flux défilant (0 overflow garanti)
+                              // En mode Paysage très bas (< 480 dp), le panneau LSQ défile avec le texte (0 overflow)
                               if (settings.profile ==
                                       AccessibilityProfile.lsqVisual &&
                                   provider.analyzedWords.isNotEmpty &&
-                                  !settings.giantWordMode)
+                                  !settings.giantWordMode &&
+                                  MediaQuery.of(context).size.height < 480)
                                 LsqReaderPanel(
                                   provider: provider,
                                   ttsService: _ttsService,

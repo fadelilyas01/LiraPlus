@@ -44,6 +44,7 @@ class LsqMotionSpec {
 
     if (lower.contains('oiseau') ||
         lower.contains('vole') ||
+        lower.contains('geai') ||
         lower.contains('papillon')) {
       return const LsqMotionSpec(
         title: 'Battement des ailes & Pincement du bec',
@@ -55,29 +56,9 @@ class LsqMotionSpec {
       );
     }
 
-    if (lower.contains('chat')) {
-      return const LsqMotionSpec(
-        title: 'Caresse des moustaches vers l\'extérieur',
-        kind: LsqMovementKind.whiskersCaress,
-        startPosition: 'Pouce et index près des joues.',
-        trajectoryDescription:
-            'Glisser les doigts vers l\'extérieur en écartant les mains des joues.',
-        repetition: '2 fois de suite.',
-      );
-    }
-
-    if (lower.contains('chien')) {
-      return const LsqMotionSpec(
-        title: 'Tapotement sur la cuisse',
-        kind: LsqMovementKind.pattingThigh,
-        startPosition: 'Main droite ouverte au-dessus de la cuisse.',
-        trajectoryDescription:
-            'Descendre la paume pour tapoter 2 fois la jambe pour appeler le chien.',
-        repetition: '2 tapotements légers rythmés.',
-      );
-    }
-
-    if (lower.contains('arbre') ||
+    if (lower.contains('sapin') ||
+        lower.contains('érable') ||
+        lower.contains('arbre') ||
         lower.contains('forêt') ||
         lower.contains('bois')) {
       return const LsqMotionSpec(
@@ -86,58 +67,154 @@ class LsqMotionSpec {
         startPosition:
             'Coude posé sur le dos de l\'autre main, avant-bras vertical.',
         trajectoryDescription:
-            'La main ouverte ondule doucement de gauche à droite comme les feuilles au vent.',
+            'La main ouverte ondule doucement de gauche à droite comme les branches d\'un sapin ou d\'un érable.',
         repetition: 'Mouvement fluide continu.',
+      );
+    }
+
+    if (lower.contains('mange') ||
+        lower.contains('graine') ||
+        lower.contains('petit') ||
+        lower.contains('bec')) {
+      return const LsqMotionSpec(
+        title: 'Pincement délicat vers la bouche',
+        kind: LsqMovementKind.handPinch,
+        startPosition: 'Bout des doigts réunis devant la bouche.',
+        trajectoryDescription:
+            'Rapprocher et pincer délicatement les doigts pour mimer le bec ou le fait de manger.',
+        repetition: '2 petits mouvements doux.',
+      );
+    }
+
+    if (lower.contains('sourire') ||
+        lower.contains('ami') ||
+        lower.contains('aimer') ||
+        lower.contains('cœur') ||
+        lower.contains('souhaite') ||
+        lower.contains('merveilleu') ||
+        lower.contains('courageu')) {
+      return const LsqMotionSpec(
+        title: 'Geste chaleureux et bienveillant',
+        kind: LsqMovementKind.heartPulse,
+        startPosition: 'Main ouverte près du cœur ou des joues.',
+        trajectoryDescription:
+            'Mouvement circulaire doux sur la poitrine ou vers l\'extérieur avec un beau sourire.',
+        repetition: '2 pulsations douces.',
+      );
+    }
+
+    if (lower.contains('étoile') ||
+        lower.contains('brille') ||
+        lower.contains('doré') ||
+        lower.contains('neige') ||
+        lower.contains('illumin') ||
+        lower.contains('étincel') ||
+        lower.contains('blanc')) {
+      return const LsqMotionSpec(
+        title: 'Scintillement lumineux des doigts',
+        kind: LsqMovementKind.starTwinkle,
+        startPosition: 'Mains levées vers le haut, doigts légèrement courbés.',
+        trajectoryDescription:
+            'Ouvrir et fermer les doigts en alternance comme des étoiles qui brillent ou la neige qui tombe.',
+        repetition: 'Scintillement continu.',
+      );
+    }
+
+    if (lower.contains('chat') || lower.contains('cerf')) {
+      return const LsqMotionSpec(
+        title: 'Geste animal près du visage',
+        kind: LsqMovementKind.whiskersCaress,
+        startPosition: 'Mains de chaque côté du visage.',
+        trajectoryDescription:
+            'Écarter doucement les doigts vers l\'extérieur pour figurer les moustaches ou les bois.',
+        repetition: '2 fois de suite.',
+      );
+    }
+
+    if (lower.contains('chien') ||
+        lower.contains('marche') ||
+        lower.contains('avance') ||
+        lower.contains('sentier') ||
+        lower.contains('enfant')) {
+      return const LsqMotionSpec(
+        title: 'Rythme de pas et de mouvement',
+        kind: LsqMovementKind.pattingThigh,
+        startPosition: 'Main ouverte devant soi, paume vers le bas.',
+        trajectoryDescription:
+            'Mouvement rythmé vers le bas ou vers l\'avant pour montrer quelqu\'un qui avance ou un enfant.',
+        repetition: '2 tapotements légers rythmés.',
       );
     }
 
     if (lower.contains('livre') ||
         lower.contains('lire') ||
-        lower.contains('histoire')) {
+        lower.contains('histoire') ||
+        lower.contains('découvr') ||
+        lower.contains('sac') ||
+        lower.contains('enseignant') ||
+        lower.contains('classe')) {
       return const LsqMotionSpec(
         title: 'Ouverture du livre à deux mains',
         kind: LsqMovementKind.turningPages,
         startPosition: 'Deux mains jointes paumes collées devant soi.',
         trajectoryDescription:
-            'Ouvrir les deux paumes vers le haut comme un livre qu\'on consulte.',
-        repetition: '1 ouverture franche suivie d\'un léger balayage des yeux.',
+            'Ouvrir les deux paumes vers le haut comme un livre qu\'on découvre à l\'école.',
+        repetition: '1 ouverture franche suivie d\'un léger balayage.',
       );
     }
 
     if (lower.contains('soleil') ||
         lower.contains('ciel') ||
-        lower.contains('jour')) {
+        lower.contains('jour') ||
+        lower.contains('matin') ||
+        lower.contains('grand') ||
+        lower.contains('bleu') ||
+        lower.contains('air')) {
       return const LsqMotionSpec(
-        title: 'Rayonnement vers l\'extérieur',
+        title: 'Déploiement ample vers le ciel',
         kind: LsqMovementKind.sunRaysExpansion,
-        startPosition: 'Poing fermé près du front.',
+        startPosition: 'Main près du front ou devant le visage.',
         trajectoryDescription:
-            'Ouvrir tous les doigts en étoile en avançant la main comme un faisceau lumineux.',
+            'Ouvrir les doigts en déployant la main vers l\'extérieur pour montrer le ciel, le soleil ou la grandeur.',
         repetition: '1 déploiement ample.',
       );
     }
 
-    if (lower.contains('maison') || lower.contains('école')) {
+    if (lower.contains('maison') ||
+        lower.contains('école') ||
+        lower.contains('cabane') ||
+        lower.contains('montagne') ||
+        lower.contains('sommet') ||
+        lower.contains('fenêtre')) {
       return const LsqMotionSpec(
-        title: 'Tracé du toit en triangle',
+        title: 'Tracé du toit ou du sommet en triangle',
         kind: LsqMovementKind.houseRoofTriangle,
         startPosition:
             'Bouts des doigts joints au sommet pour former un angle.',
         trajectoryDescription:
-            'Descendre les deux mains obliquement pour dessiner les deux pans du toit.',
+            'Descendre les deux mains obliquement pour dessiner le toit de la maison, de la cabane ou le sommet.',
         repetition: '1 descente ferme.',
       );
     }
 
     if (lower.contains('eau') ||
         lower.contains('mer') ||
-        lower.contains('lac')) {
+        lower.contains('lac') ||
+        lower.contains('fleuve') ||
+        lower.contains('ruisseau') ||
+        lower.contains('baleine') ||
+        lower.contains('béluga') ||
+        lower.contains('nage') ||
+        lower.contains('doucement') ||
+        lower.contains('vent') ||
+        lower.contains('souffle') ||
+        lower.contains('calme')) {
       return const LsqMotionSpec(
-        title: 'Ondulation de la vague',
+        title: 'Ondulation douce et fluide',
         kind: LsqMovementKind.waterWaveFlow,
         startPosition: 'Main horizontale paume vers le bas.',
         trajectoryDescription:
-            'Faire onduler la main en vagues douces vers l\'avant.',
+            'Faire onduler la main en vagues calmes vers l\'avant pour mimer l\'eau, le vent ou la douceur.',
         repetition: 'Mouvement continu et calme.',
       );
     }

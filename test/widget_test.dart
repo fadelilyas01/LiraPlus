@@ -791,11 +791,11 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
-      // Le panneau LSQ est désormais visible avec l'en-tête et l'animation du mouvement
+      // Le panneau LSQ compact est désormais visible en haut avec la main en signe en direct
       expect(find.byType(LsqReaderPanel), findsOneWidget);
       expect(find.text('ESPACE SOURD • LSQ'), findsOneWidget);
-      expect(find.byType(LsqMotionViewer), findsOneWidget);
-      expect(find.text('MOUVEMENT DU SIGNE (LSQ)'), findsOneWidget);
+      expect(find.byType(LsqHandshapeWidget), findsOneWidget);
+      expect(find.textContaining('Signe '), findsOneWidget);
     });
 
     testWidgets(
